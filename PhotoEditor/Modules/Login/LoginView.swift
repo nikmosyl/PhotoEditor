@@ -11,51 +11,56 @@ struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     
     var body: some View {
-        VStack {
-            Text("Login")
-                .font(Font.system(size: 30))
+        ZStack {
+            Color(.background)
+                .ignoresSafeArea()
             
-            Spacer()
-            
-            placeTextField(
-                text: $viewModel.email,
-                title: "Email",
-                placeholder: "Enter your email adress",
-                onSubmit: { print("done") },
-                isHiddeble: false
-            )
-            
-            placeTextField(
-                text: $viewModel.password,
-                title: "Password",
-                placeholder: "Enter your password",
-                onSubmit: {},
-                isHiddeble: true
-            )
-            
-            Button("Login") {
-                Task {
-                    await viewModel.login()
-                }
-            }
-            
-            Spacer()
-            
-            HStack {
-                Text("Don't have an account?")
+            VStack {
+                Text("Login")
+                    .font(Font.system(size: 32).bold())
                 
-                Button("Sign Up") {
-                    print("go to Sign UP")
+                Spacer()
+                
+                placeTextField(
+                    text: $viewModel.email,
+                    title: "Email",
+                    placeholder: "Enter your email adress",
+                    onSubmit: { print("done") },
+                    isHiddeble: false
+                )
+                
+                placeTextField(
+                    text: $viewModel.password,
+                    title: "Password",
+                    placeholder: "Enter your password",
+                    onSubmit: {},
+                    isHiddeble: true
+                )
+                
+                Button("Login") {
+                    Task {
+                        await viewModel.login()
+                    }
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Text("Don't have an account?")
+                    
+                    Button("Sign Up") {
+                        print("go to Sign UP")
+                    }
                 }
             }
-        }
-        .padding()
-        .alert(isPresented: $viewModel.isAllertPresented) {
-            Alert(
-                title: Text("Error"),
-                message: Text(viewModel.alertMessage),
-                dismissButton: .default(Text("ОК"))
-            )
+            .padding()
+            .alert(isPresented: $viewModel.isAllertPresented) {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(viewModel.alertMessage),
+                    dismissButton: .default(Text("ОК"))
+                )
+            }
         }
     }
     
@@ -71,14 +76,14 @@ struct LoginView: View {
             title: title,
             placeholder: placeholder,
             onSubmit: onSubmit,
-            height: 32,
+            height: 56,
             cornerRadius: 12,
-            fontSize: 20,
-            labelTextColor: .green,
-            textColor: .red,
-            placeholderColor: .yellow,
-            backgroundColor: .gray,
-            borderColor: .red,
+            fontSize: 16,
+            labelTextColor: Color.secondaryText,
+            textColor: Color.text,
+            placeholderColor: Color.secondaryText,
+            backgroundColor: Color.background,
+            borderColor: Color.border,
             isHiddeble: isHiddeble
         )
     }
