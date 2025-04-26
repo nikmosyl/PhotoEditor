@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var coordinator: NavigationCoordinator
     @StateObject private var viewModel = LoginViewModel()
     
     var body: some View {
@@ -15,27 +16,45 @@ struct LoginView: View {
             Color(.background)
                 .ignoresSafeArea()
             
-            VStack {
-                Text("Login")
-                    .font(Font.system(size: 32).bold())
-                
+            VStack(spacing: 16) {
                 Spacer()
                 
-                placeTextField(
-                    text: $viewModel.email,
-                    title: "Email",
-                    placeholder: "Enter your email adress",
-                    onSubmit: { print("done") },
-                    isHiddeble: false
-                )
+                HStack {
+                    Text("Sign In")
+                        .font(.title)
+                    Spacer()
+                }
                 
-                placeTextField(
-                    text: $viewModel.password,
-                    title: "Password",
-                    placeholder: "Enter your password",
-                    onSubmit: {},
-                    isHiddeble: true
+                PrimaryTextField(
+                    text: $viewModel.email,
+                    placeholder: "Enter your email"
                 )
+                .textFieldStyleModifier(iconName: "envelope")
+                
+                HiddebleTextField(
+                    text: $viewModel.password,
+                    placeholder: "Enter your password"
+                )
+                .textFieldStyleModifier(iconName: "lock")
+                
+                HStack {
+                    Toggle(isOn: $viewModel.shouldRememberMe) {}
+                        .labelsHidden()
+                        .tint(.buttonBackground)
+                    
+                    Text("Remember Me")
+                        .foregroundColor(.secondaryText)
+                    
+                    Spacer()
+                    
+                    Button {
+                        coordinator.resetPassword()
+                    } label: {
+                        Text("Forgot password?")
+                            .tint(.secondaryText)
+                    }
+                    
+                }
                 
                 Button("Login") {
                     Task {
@@ -62,30 +81,6 @@ struct LoginView: View {
                 )
             }
         }
-    }
-    
-    private func placeTextField (
-        text: Binding<String>,
-        title: String,
-        placeholder: String,
-        onSubmit: @escaping () -> Void,
-        isHiddeble: Bool
-    ) -> some View {
-        TextFieldWithTitle(
-            text: text,
-            title: title,
-            placeholder: placeholder,
-            onSubmit: onSubmit,
-            height: 56,
-            cornerRadius: 12,
-            fontSize: 16,
-            labelTextColor: Color.secondaryText,
-            textColor: Color.text,
-            placeholderColor: Color.secondaryText,
-            backgroundColor: Color.background,
-            borderColor: Color.border,
-            isHiddeble: isHiddeble
-        )
     }
 }
 

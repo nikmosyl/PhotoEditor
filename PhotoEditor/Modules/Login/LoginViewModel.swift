@@ -10,6 +10,8 @@ import Foundation
 final class LoginViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
+    @Published var shouldRememberMe: Bool = false
+    
     @Published var moveToProfile: Bool = false
     @Published var isAllertPresented: Bool = false
     @Published var alertMessage: String = ""

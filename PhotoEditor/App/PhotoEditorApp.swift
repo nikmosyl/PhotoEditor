@@ -12,11 +12,24 @@ import GoogleSignIn
 @main
 struct PhotoEditorApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject var coordinator = NavigationCoordinator()
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            switch coordinator.currentScreen {
+            case .signIn:
+                LoginView()
+            case .signUp:
+                Text("Sign UP")
+            case .resetPassword:
+                Text("reset Password")
+            case .home:
+                Text("home")
+            case .profile:
+                Text("profile")
+            }
         }
+        .environmentObject(coordinator)
     }
 }
 
@@ -26,6 +39,3 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     return true
   }
 }
-
-
-//project-308444623809
