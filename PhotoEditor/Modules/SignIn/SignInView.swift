@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct LoginView: View {
+struct SignInView: View {
     @EnvironmentObject var coordinator: NavigationCoordinator
-    @StateObject private var viewModel = LoginViewModel()
+    @FocusState var keyboardIsAppear: Bool
+    @StateObject private var viewModel = SignInViewModel()
     
     var body: some View {
         ZStack {
@@ -56,19 +57,48 @@ struct LoginView: View {
                     
                 }
                 
-                Button("Login") {
-                    Task {
-                        await viewModel.login()
+                VStack(spacing: 36) {
+                    ColoredButton(
+                        label: "SIGN IN",
+                        type: .primary,
+                        icon: nil
+                    ) {
+                        Task {
+                            await viewModel.login()
+                        }
+                    }
+                    
+                    if !keyboardIsAppear {
+                        Text("OR")
+                            .foregroundStyle(.secondaryText)
+                        
+                        ColoredButton(
+                            label: "Login with Google",
+                            type: .secondary,
+                            icon: Image(.googleIcon)
+                        ) {
+                            Task {
+                                await viewModel.login()
+                            }
+                        }
                     }
                 }
+                .padding(.horizontal, 55)
+                .padding(.top, 36)
                 
                 Spacer()
                 
-                HStack {
-                    Text("Don't have an account?")
-                    
-                    Button("Sign Up") {
-                        print("go to Sign UP")
+                if !keyboardIsAppear {
+                    HStack {
+                        Text("Don't have an account?")
+                        
+                        Button {
+                            coordinator.signUp()
+                        } label: {
+                            Text("Sign Up")
+                                .foregroundStyle(.secondaryButtonTitle)
+                        }
+                        
                     }
                 }
             }
@@ -80,10 +110,11 @@ struct LoginView: View {
                     dismissButton: .default(Text("ОК"))
                 )
             }
+            .focused($keyboardIsAppear)
         }
     }
 }
 
 #Preview {
-    LoginView()
+    SignInView()
 }

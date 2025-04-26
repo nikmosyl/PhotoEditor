@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class LoginViewModel: ObservableObject {
+final class SignInViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var shouldRememberMe: Bool = false

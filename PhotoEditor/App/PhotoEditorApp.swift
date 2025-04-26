@@ -18,7 +18,7 @@ struct PhotoEditorApp: App {
         WindowGroup {
             switch coordinator.currentScreen {
             case .signIn:
-                LoginView()
+                SignInView()
             case .signUp:
                 Text("Sign UP")
             case .resetPassword:
