@@ -30,6 +30,11 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut, value: coordinator.currentScreen)
+        .onAppear {
+            Task {
+                await coordinator.restoreUser()
+            }
+        }
     }
 }
 

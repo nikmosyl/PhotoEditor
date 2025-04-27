@@ -17,15 +17,11 @@ final class SignInViewModel: ObservableObject {
     
     func login() async -> Bool {
         do {
-            let user = try await AuthService.shared.signInUser(
+            try await AuthService.shared.signInUser(
                 email: email,
-                password: password
+                password: password,
+                remember: shouldRememberMe
             )
-            
-            #warning("TO DO: remember me")
-            if shouldRememberMe {
-                print("remember \(user.nickname)")
-            }
             
             return true
         } catch {
@@ -40,12 +36,7 @@ final class SignInViewModel: ObservableObject {
     @MainActor
     func loginWithGoogle() async -> Bool {
         do {
-            let user = try await AuthService.shared.signInWithGoogle()
-            
-            #warning("TO DO: remember me")
-            if shouldRememberMe {
-                print("remember \(user.nickname)")
-            }
+            try await AuthService.shared.signInWithGoogle()
             
             return true
         } catch {

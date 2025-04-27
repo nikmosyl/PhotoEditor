@@ -50,4 +50,16 @@ class NavigationCoordinator: ObservableObject {
     func showProfile() {
         currentScreen = .profile
     }
+    
+    func restoreUser() async {
+        do {
+            try await AuthService.shared.restoreUser()
+            
+            await MainActor.run {
+                currentScreen = .gallery
+            }
+        } catch {
+            print("Пользователь не найден")
+        }
+    }
 }

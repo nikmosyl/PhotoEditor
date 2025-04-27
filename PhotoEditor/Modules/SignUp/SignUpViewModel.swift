@@ -49,19 +49,16 @@ final class SignUpViewModel: ObservableObject {
         }
         
         do {
-            let user = try await AuthService.shared.registerUser(
+            try await AuthService.shared.registerUser(
                 email: email,
                 password: password,
                 nickname: nikname
             )
             
-            let signedInUser = try await AuthService.shared.signInUser(
+            try await AuthService.shared.signInUser(
                 email: email,
                 password: password
             )
-            
-            #warning("TO DO: remember me")
-            print("Пользователь вошел: \(signedInUser.uid) \(signedInUser.nickname)")
         } catch {
             await MainActor.run {
                 alertMessage = "\(error.localizedDescription)"
