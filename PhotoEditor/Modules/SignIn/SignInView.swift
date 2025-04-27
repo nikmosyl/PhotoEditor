@@ -37,23 +37,24 @@ struct SignInView: View {
                 )
                 .textFieldStyleModifier(iconName: "lock")
                 
-                HStack {
-                    Toggle(isOn: $viewModel.shouldRememberMe) {}
-                        .labelsHidden()
-                        .tint(.buttonBackground)
-                    
-                    Text("Remember Me")
-                        .foregroundColor(.secondaryText)
-                    
-                    Spacer()
-                    
-                    Button {
-                        coordinator.resetPassword()
-                    } label: {
-                        Text("Forgot password?")
-                            .tint(.secondaryText)
+                ZStack {
+                    HStack {
+                        Toggle(isOn: $viewModel.shouldRememberMe) {}
+                            .labelsHidden()
+                            .tint(.buttonBackground)
+                        
+                        Text("Remember Me")
+                            .foregroundColor(.secondaryText)
+                        
+                        Spacer()
+                        
+                        Button {
+                            coordinator.resetPassword()
+                        } label: {
+                            Text("Forgot password?")
+                                .tint(.secondaryText)
+                        }
                     }
-                    
                 }
                 
                 VStack(spacing: 36) {
@@ -116,6 +117,10 @@ struct SignInView: View {
                     message: Text(viewModel.alertMessage),
                     dismissButton: .default(Text("ОК"))
                 )
+            }
+            
+            if viewModel.processing {
+                LoadingView()
             }
         }
     }

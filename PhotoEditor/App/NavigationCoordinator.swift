@@ -16,6 +16,7 @@ enum Screen {
 }
 
 class NavigationCoordinator: ObservableObject {
+    @Published var processing: Bool = false
     @Published var currentScreen: Screen = .signIn {
         didSet {
             previousScreen = oldValue
@@ -51,15 +52,18 @@ class NavigationCoordinator: ObservableObject {
         currentScreen = .profile
     }
     
+    @MainActor
     func restoreUser() async {
+        processing = true
         do {
             try await AuthService.shared.restoreUser()
-            
+            processing = false
             await MainActor.run {
                 currentScreen = .gallery
             }
         } catch {
             print("Пользователь не найден")
+            processing = false
         }
     }
 }

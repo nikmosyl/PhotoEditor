@@ -12,6 +12,9 @@ final class SignUpViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var passwordConfirm: String = ""
+    
+    @Published var processing: Bool = false
+    
     @Published var isAllertPresented: Bool = false
     var alertMessage: String = ""
     
@@ -40,13 +43,14 @@ final class SignUpViewModel: ObservableObject {
         return true
     }
     
+    @MainActor
     func signUp() async -> Bool {
         guard valideteTextFields() else {
-            await MainActor.run {
-                isAllertPresented = true
-            }
+            isAllertPresented = true
             return false
         }
+        
+        processing = true
         
         do {
             try await AuthService.shared.registerUser(
@@ -59,14 +63,13 @@ final class SignUpViewModel: ObservableObject {
                 email: email,
                 password: password
             )
+            processing = false
+            return true
         } catch {
-            await MainActor.run {
-                alertMessage = "\(error.localizedDescription)"
-                isAllertPresented = true
-            }
+            alertMessage = "\(error.localizedDescription)"
+            processing = false
+            isAllertPresented = true
             return false
         }
-        
-        return true
     }
 }

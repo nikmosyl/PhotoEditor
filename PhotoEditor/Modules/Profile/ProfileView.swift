@@ -63,6 +63,10 @@ struct ProfileView: View {
                     .buttonPadding()
                 }
                 .padding()
+                
+                if viewModel.processing {
+                    LoadingView()
+                }
             }
             .navigationTitle("Profile")
             .toolbar {

@@ -56,7 +56,9 @@ struct SignUpView: View {
                     icon: nil
                 ) {
                     Task {
-                        await viewModel.signUp()
+                        if await viewModel.signUp() {
+                            coordinator.loggedIn()
+                        }
                     }
                 }
                 .buttonPadding()
@@ -85,6 +87,10 @@ struct SignUpView: View {
                     message: Text(viewModel.alertMessage),
                     dismissButton: .default(Text("ОК"))
                 )
+            }
+            
+            if viewModel.processing {
+                LoadingView()
             }
         }
     }

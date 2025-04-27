@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct GalleryView: View {
     @EnvironmentObject var coordinator: NavigationCoordinator
     @StateObject private var viewModel = GalleryViewModel()
+    
+    @State private var selectedItem: PhotosPickerItem?
+    @State var isImegaPickerPresented = false
+    @State var isPhotosPickerPresented = false
     
     let columns = [
         GridItem(.flexible()),
@@ -23,12 +28,40 @@ struct GalleryView: View {
                 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(0..<20) { item in
-                            Rectangle()
-                                .fill(Color.buttonBackground)
-                                .frame(height: 100)
-                                .overlay(Text("\(item)").foregroundColor(.white))
+                        if let images = viewModel.userProfile.images {
+                            ForEach(images.indices, id: \.self) { index in
+                                if let uiImage = UIImage(data: images[index]) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 150, height: 150) // размер ячейки
+                                        .clipped()
+                                        .cornerRadius(8)
+                                }
+                            }
                         }
+                    }
+                    .padding()
+                }
+                
+                if viewModel.userProfile.images?.isEmpty ?? true,
+                   !isImegaPickerPresented {
+                    ColoredButton(
+                        label: "Add Images",
+                        type: .secondary,
+                        icon: nil,
+                        closure: { isImegaPickerPresented.toggle() }
+                    )
+                    .padding()
+                }
+                
+                if isImegaPickerPresented {
+                    ImagePicker {
+                        isImegaPickerPresented = false
+                        isPhotosPickerPresented = true
+                    } takePhoto: {
+                        print("take photo")
+                        isImegaPickerPresented = false
                     }
                     .padding()
                 }
@@ -37,10 +70,11 @@ struct GalleryView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        print("add")
+                        isImegaPickerPresented.toggle()
                     } label: {
-                        Image(systemName: "photo.badge.plus")
+                        Image(systemName: "plus")
                             .foregroundStyle(Color.secondaryButtonTitle)
+                            .bold()
                     }
                 }
                 
@@ -50,6 +84,18 @@ struct GalleryView: View {
                     } label: {
                         Image(systemName: "person.fill")
                             .foregroundStyle(Color.secondaryButtonTitle)
+                    }
+                }
+            }
+            .photosPicker(
+                isPresented: $isPhotosPickerPresented,
+                selection: $selectedItem,
+                matching: .images
+            )
+            .onChange(of: selectedItem) { _, newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                        viewModel.userProfile.images?.append(data)
                     }
                 }
             }

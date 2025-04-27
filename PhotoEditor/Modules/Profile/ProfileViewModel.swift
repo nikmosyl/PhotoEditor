@@ -9,29 +9,34 @@ import Foundation
 
 final class ProfileViewModel: ObservableObject {
     @Published var userProfile: UserProfile
+    
+    @Published var processing: Bool = false
+    
     @Published var isAllertPresented: Bool = false
     var alertMessage: String = ""
     var alertTitle: String = ""
     
     init() {
-        userProfile = UserProfile(
-            uid: "0",
-            nickname: "empty",
-            photo: Data()
-        )
+        userProfile = UserProfile(uid: "0", nickname: "empty")
     }
     
+    @MainActor
     func fetchUserProfile() async {
+        processing = true
+        
         guard let currentUser = await AuthService.shared.getCurrentUser() else {
             return
         }
         
-        await MainActor.run {
-            userProfile = currentUser
-        }
+        userProfile = currentUser
+        
+        processing = false
     }
     
+    @MainActor
     func saveUserProfile() async {
+        processing = true
+        
         do {
             try await AuthService.shared.saveUserProfile(user: userProfile)
             alertTitle = "Success"
@@ -41,9 +46,8 @@ final class ProfileViewModel: ObservableObject {
             alertMessage = "\(error.localizedDescription)"
         }
         
-        await MainActor.run {
-            isAllertPresented = true
-        }
+        processing = false
+        isAllertPresented = true
     }
     
     func logout() {

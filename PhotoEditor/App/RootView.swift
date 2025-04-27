@@ -28,6 +28,10 @@ struct RootView: View {
             case .profile:
                 ProfileView()
             }
+            
+            if coordinator.processing {
+                LoadingView()
+            }
         }
         .animation(.easeInOut, value: coordinator.currentScreen)
         .onAppear {
@@ -40,4 +44,5 @@ struct RootView: View {
 
 #Preview {
     RootView()
+        .environmentObject(NavigationCoordinator())
 }
