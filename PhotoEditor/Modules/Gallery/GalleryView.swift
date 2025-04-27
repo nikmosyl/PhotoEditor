@@ -28,24 +28,21 @@ struct GalleryView: View {
                 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        if let images = viewModel.userProfile.images {
-                            ForEach(images.indices, id: \.self) { index in
-                                if let uiImage = UIImage(data: images[index]) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 150, height: 150) // размер ячейки
-                                        .clipped()
-                                        .cornerRadius(8)
-                                }
+                        ForEach(viewModel.userProfile.images.indices, id: \.self) { index in
+                            if let uiImage = UIImage(data: viewModel.userProfile.images[index]) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 150, height: 150) // размер ячейки
+                                    .clipped()
+                                    .cornerRadius(8)
                             }
                         }
                     }
                     .padding()
                 }
                 
-                if viewModel.userProfile.images?.isEmpty ?? true,
-                   !isImegaPickerPresented {
+                if viewModel.userProfile.images.isEmpty && !isImegaPickerPresented {
                     ColoredButton(
                         label: "Add Images",
                         type: .secondary,
@@ -95,7 +92,7 @@ struct GalleryView: View {
             .onChange(of: selectedItem) { _, newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                        viewModel.userProfile.images?.append(data)
+                        viewModel.userProfile.images.append(data)
                     }
                 }
             }
