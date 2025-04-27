@@ -62,6 +62,7 @@ final class AuthService {
     
     func signOut() throws {
         try auth.signOut()
+        GIDSignIn.sharedInstance.signOut()
     }
     
     func sendPasswordReset(email: String) async throws {
@@ -123,6 +124,4 @@ final class AuthService {
             return profile
         }
     }
-    
-    
 }

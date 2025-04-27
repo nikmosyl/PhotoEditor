@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GoogleSignInSwift
 
 struct SignInView: View {
     @EnvironmentObject var coordinator: NavigationCoordinator
@@ -84,6 +85,8 @@ struct SignInView: View {
                             }
                         }
                     }
+                    
+                    
                 }
                 .buttonPadding()
                 .padding(.top, 36)

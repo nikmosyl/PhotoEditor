@@ -20,6 +20,13 @@ struct PhotoEditorApp: App {
                 .onOpenURL { url in
                     GIDSignIn.sharedInstance.handle(url)
                 }
+                .onAppear {
+                    GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                        if (user != nil) {
+                            coordinator.loggedIn()
+                        }
+                    }
+                }
         }
         .environmentObject(coordinator)
     }
