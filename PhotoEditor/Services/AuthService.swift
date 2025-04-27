@@ -5,10 +5,10 @@
 //  Created by nikita on 25.04.2025.
 //
 
-import Foundation
 import FirebaseAuth
-import FirebaseDatabaseInternal
-
+import FirebaseDatabase
+import FirebaseCore
+import GoogleSignIn
 
 final class AuthService {
     static let shared = AuthService()
@@ -62,5 +62,54 @@ final class AuthService {
     
     func signOut() throws {
         try auth.signOut()
+    }
+    
+    func sendPasswordReset(email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
+    
+    @MainActor
+    func signInWithGoogle() async throws -> UserProfile {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            throw NSError(domain: "GoogleAuth", code: -1, userInfo: [NSLocalizedDescriptionKey: "Missing client ID"])
+        }
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+        
+        guard let rootViewController = UIApplication.shared
+            .connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?
+            .windows
+            .first(where: { $0.isKeyWindow })?
+            .rootViewController else {
+            throw NSError(domain: "GoogleAuth", code: -1, userInfo: [NSLocalizedDescriptionKey: "No root view controller"])
+        }
+        
+        let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        
+        let idToken = userAuthentication.user.idToken?.tokenString
+        let accessToken = userAuthentication.user.accessToken.tokenString
+        
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken ?? "", accessToken: accessToken)
+        
+        let result = try await Auth.auth().signIn(with: credential)
+        let user = result.user
+        
+        let userId = user.uid
+        do {
+            return try await fetchUserProfile(userId: userId)
+        } catch {
+            let nameComponents = user.displayName?.split(separator: " ") ?? []
+            let firstName = nameComponents.first.map(String.init) ?? "User"
+            
+            let profile = UserProfile(
+                uid: userId,
+                nickname: firstName
+            )
+            try await saveUserProfile(user: profile)
+            return profile
+        }
     }
 }

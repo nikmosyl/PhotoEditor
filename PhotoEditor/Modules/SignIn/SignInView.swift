@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignInView: View {
     @EnvironmentObject var coordinator: NavigationCoordinator
-    @FocusState var keyboardIsAppear: Bool
+    @FocusState var keyboardIsActive: Bool
     @StateObject private var viewModel = SignInViewModel()
     
     var body: some View {
@@ -20,11 +20,9 @@ struct SignInView: View {
             VStack(spacing: 16) {
                 Spacer()
                 
-                HStack {
-                    Text("Sign In")
-                        .font(.title)
-                    Spacer()
-                }
+                Text("Sign In")
+                    .font(.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 PrimaryTextField(
                     text: $viewModel.email,
@@ -64,11 +62,13 @@ struct SignInView: View {
                         icon: nil
                     ) {
                         Task {
-                            await viewModel.login()
+                            if await viewModel.login() {
+                                coordinator.loggedIn()
+                            }
                         }
                     }
                     
-                    if !keyboardIsAppear {
+                    if !keyboardIsActive {
                         Text("OR")
                             .foregroundStyle(.secondaryText)
                         
@@ -78,7 +78,9 @@ struct SignInView: View {
                             icon: Image(.googleIcon)
                         ) {
                             Task {
-                                await viewModel.login()
+                                if await viewModel.loginWithGoogle() {
+                                    coordinator.loggedIn()
+                                }
                             }
                         }
                     }
@@ -88,9 +90,10 @@ struct SignInView: View {
                 
                 Spacer()
                 
-                if !keyboardIsAppear {
+                if !keyboardIsActive {
                     HStack {
                         Text("Don't have an account?")
+                            .foregroundStyle(.secondaryText)
                         
                         Button {
                             coordinator.signUp()
@@ -103,6 +106,7 @@ struct SignInView: View {
                 }
             }
             .padding()
+            .focused($keyboardIsActive)
             .alert(isPresented: $viewModel.isAllertPresented) {
                 Alert(
                     title: Text("Error"),
@@ -110,7 +114,6 @@ struct SignInView: View {
                     dismissButton: .default(Text("ОК"))
                 )
             }
-            .focused($keyboardIsAppear)
         }
     }
 }

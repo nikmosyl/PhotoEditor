@@ -16,25 +16,40 @@ final class SignInViewModel: ObservableObject {
     @Published var isAllertPresented: Bool = false
     @Published var alertMessage: String = ""
     
-    func login() async {
+    func login() async -> Bool {
         do {
             let signedInUser = try await AuthService.shared.signInUser(
                 email: email,
                 password: password
             )
-            print("User sign in: \(signedInUser.uid) \(signedInUser.nickname)")
+            #warning("DEBUG")
+            print("Пользователь вошел: \(signedInUser.uid) \(signedInUser.nickname)")
         } catch {
+            #warning("DEBUG")
             print("Ошибка логина: \(error)")
             
             await MainActor.run {
                 alertMessage = "\(error.localizedDescription)"
                 isAllertPresented = true
             }
-            return
+            return false
         }
         
-        await MainActor.run {
-            moveToProfile = true
+        return true
+    }
+    
+    @MainActor
+    func loginWithGoogle() async -> Bool {
+        do {
+            let user = try await AuthService.shared.signInWithGoogle()
+            #warning("DEBUG")
+            print("Google user logged in: \(user.nickname)")
+            
+            return true
+        } catch {
+            alertMessage = error.localizedDescription
+            isAllertPresented = true
+            return false
         }
     }
 }

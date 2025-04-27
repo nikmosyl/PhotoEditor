@@ -18,7 +18,7 @@ enum Screen {
 class NavigationCoordinator: ObservableObject {
     @Published var currentScreen: Screen = .signIn
     
-    func login() {
+    func loggedIn() {
         currentScreen = .home
     }
     

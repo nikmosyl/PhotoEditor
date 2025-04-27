@@ -16,26 +16,18 @@ struct PhotoEditorApp: App {
     
     var body: some Scene {
         WindowGroup {
-            switch coordinator.currentScreen {
-            case .signIn:
-                SignInView()
-            case .signUp:
-                Text("Sign UP")
-            case .resetPassword:
-                Text("reset Password")
-            case .home:
-                Text("home")
-            case .profile:
-                Text("profile")
-            }
+            RootView()
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
+                }
         }
         .environmentObject(coordinator)
     }
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
 }
