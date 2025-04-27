@@ -68,6 +68,17 @@ final class AuthService {
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }
     
+    func getCurrentUser() async -> UserProfile? {
+        guard let userId = auth.currentUser?.uid else { return nil }
+        
+        do {
+            let userProfile = try await fetchUserProfile(userId: userId)
+            return userProfile
+        } catch {
+            return nil
+        }
+    }
+    
     @MainActor
     func signInWithGoogle() async throws -> UserProfile {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
@@ -112,4 +123,6 @@ final class AuthService {
             return profile
         }
     }
+    
+    
 }

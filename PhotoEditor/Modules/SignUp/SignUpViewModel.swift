@@ -55,17 +55,14 @@ final class SignUpViewModel: ObservableObject {
                 nickname: nikname
             )
             
-            print("Пользователь зарегистрирован: \(user.uid) \(user.nickname)")
-            
             let signedInUser = try await AuthService.shared.signInUser(
                 email: email,
                 password: password
             )
+            
+            #warning("TO DO: remember me")
             print("Пользователь вошел: \(signedInUser.uid) \(signedInUser.nickname)")
-            
         } catch {
-            print("Ошибка регистрации: \(error)")
-            
             await MainActor.run {
                 alertMessage = "\(error.localizedDescription)"
                 isAllertPresented = true

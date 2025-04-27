@@ -85,7 +85,7 @@ struct SignInView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 55)
+                .buttonPadding()
                 .padding(.top, 36)
                 
                 Spacer()

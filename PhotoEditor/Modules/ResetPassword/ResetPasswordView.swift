@@ -52,7 +52,7 @@ struct ResetPasswordView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 55)
+                .buttonPadding()
                 
                 Spacer()
             }

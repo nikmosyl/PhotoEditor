@@ -27,7 +27,6 @@ struct RootView: View {
                     .transition(.move(edge: .bottom))
             case .profile:
                 ProfileView()
-                    .transition(.move(edge: .top))
             }
         }
         .animation(.easeInOut, value: coordinator.currentScreen)

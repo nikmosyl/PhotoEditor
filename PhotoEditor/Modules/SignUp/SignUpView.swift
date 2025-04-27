@@ -59,13 +59,13 @@ struct SignUpView: View {
                         await viewModel.signUp()
                     }
                 }
-                .padding(.horizontal, 55)
+                .buttonPadding()
                 
                 Spacer()
                 
                 if !keyboardIsActive {
                     HStack {
-                        Text("Don't have an account?")
+                        Text("Already have an account?")
                             .foregroundStyle(.secondaryText)
                         
                         Button {
