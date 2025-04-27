@@ -19,11 +19,10 @@ struct ResetPasswordView: View {
             VStack(spacing: 24) {
                 HStack {
                     Button {
-                        coordinator.signIn()
+                        coordinator.back()
                     } label: {
                         Image(systemName: "arrow.backward")
                             .foregroundStyle(.text)
-                            
                     }
                     
                     Text("Reset password")

@@ -22,12 +22,12 @@ struct RootView: View {
             case .resetPassword:
                 ResetPasswordView()
                     .transition(.move(edge: .trailing))
-            case .home:
-                Text("home")
-                    .transition(.move(edge: .top))
+            case .gallery:
+                GalleryView()
+                    .transition(.move(edge: .bottom))
             case .profile:
-                Text("profile")
-                    .transition(.move(edge: .trailing))
+                ProfileView()
+                    .transition(.move(edge: .top))
             }
         }
         .animation(.easeInOut, value: coordinator.currentScreen)

@@ -11,15 +11,24 @@ enum Screen {
     case signIn
     case signUp
     case resetPassword
-    case home
+    case gallery
     case profile
 }
 
 class NavigationCoordinator: ObservableObject {
-    @Published var currentScreen: Screen = .signIn
+    @Published var currentScreen: Screen = .signIn {
+        didSet {
+            previousScreen = oldValue
+        }
+    }
+    private var previousScreen: Screen = .signIn
+    
+    func back() {
+        currentScreen = previousScreen
+    }
     
     func loggedIn() {
-        currentScreen = .home
+        currentScreen = .gallery
     }
     
     func resetPassword() {
