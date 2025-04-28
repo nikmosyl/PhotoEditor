@@ -31,12 +31,16 @@ struct GalleryView: View {
                         if let images = viewModel.userProfile.images {
                             ForEach(images.indices, id: \.self) { index in
                                 if let uiImage = UIImage(data: images[index]) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 150, height: 150)
-                                        .clipped()
-                                        .cornerRadius(8)
+                                    NavigationLink  {
+                                        ProfileView()
+                                    } label: {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 150, height: 150)
+                                            .clipped()
+                                            .cornerRadius(8)
+                                    }
                                 }
                             }
                         }
@@ -117,7 +121,6 @@ struct GalleryView: View {
                     dismissButton: .default(Text("ОК"))
                 )
             }
-            
         }
     }
 }
