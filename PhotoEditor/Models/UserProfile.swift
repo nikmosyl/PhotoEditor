@@ -11,5 +11,5 @@ struct UserProfile: Codable {
     let uid: String
     var nickname: String
     var photo: Data?
-    var images: [Data] = []
+    var images: [Data]?
 }

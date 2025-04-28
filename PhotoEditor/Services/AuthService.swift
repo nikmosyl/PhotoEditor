@@ -50,7 +50,6 @@ final class AuthService {
                 userInfo: [NSLocalizedDescriptionKey: "Incorrect data"]
             )
         }
-        
         let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
         let userProfile = try JSONDecoder().decode(UserProfile.self, from: jsonData)
         
@@ -98,7 +97,9 @@ final class AuthService {
     }
     
     func getCurrentUser() async -> UserProfile? {
-        guard let userId = auth.currentUser?.uid else { return nil }
+        guard let userId = auth.currentUser?.uid else {
+            return nil
+        }
         
         do {
             let userProfile = try await fetchUserProfile(userId: userId)

@@ -12,6 +12,9 @@ final class GalleryViewModel: ObservableObject {
     
     @Published var processing: Bool = false
     
+    @Published var isAllertPresented: Bool = false
+    var alertMessage: String = ""
+    
     @MainActor
     func fetchUserProfile() async {
         processing = true
@@ -23,5 +26,24 @@ final class GalleryViewModel: ObservableObject {
         userProfile = currentUser
         
         processing = false
+    }
+    
+    func addImage(data: Data) async {
+        await MainActor.run {
+            if userProfile.images == nil {
+                userProfile.images = [data]
+            } else {
+                userProfile.images?.append(data)
+            }
+        }
+        
+        do {
+            try await AuthService.shared.saveUserProfile(user: userProfile)
+        } catch {
+            alertMessage = "\(error.localizedDescription)"
+            await MainActor.run {
+                isAllertPresented = true
+            }
+        }
     }
 }

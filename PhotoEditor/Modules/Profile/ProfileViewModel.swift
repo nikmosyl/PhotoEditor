@@ -8,7 +8,7 @@
 import Foundation
 
 final class ProfileViewModel: ObservableObject {
-    @Published var userProfile: UserProfile
+    @Published var userProfile: UserProfile = UserProfile(uid: "", nickname: "")
     
     @Published var processing: Bool = false
     
@@ -16,15 +16,12 @@ final class ProfileViewModel: ObservableObject {
     var alertMessage: String = ""
     var alertTitle: String = ""
     
-    init() {
-        userProfile = UserProfile(uid: "0", nickname: "empty")
-    }
-    
     @MainActor
     func fetchUserProfile() async {
         processing = true
         
         guard let currentUser = await AuthService.shared.getCurrentUser() else {
+            
             return
         }
         

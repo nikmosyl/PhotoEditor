@@ -28,21 +28,23 @@ struct GalleryView: View {
                 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(viewModel.userProfile.images.indices, id: \.self) { index in
-                            if let uiImage = UIImage(data: viewModel.userProfile.images[index]) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 150, height: 150) // размер ячейки
-                                    .clipped()
-                                    .cornerRadius(8)
+                        if let images = viewModel.userProfile.images {
+                            ForEach(images.indices, id: \.self) { index in
+                                if let uiImage = UIImage(data: images[index]) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 150, height: 150)
+                                        .clipped()
+                                        .cornerRadius(8)
+                                }
                             }
                         }
                     }
                     .padding()
                 }
                 
-                if viewModel.userProfile.images.isEmpty && !isImegaPickerPresented {
+                if (viewModel.userProfile.images ?? []).isEmpty && !isImegaPickerPresented {
                     ColoredButton(
                         label: "Add Images",
                         type: .secondary,
@@ -61,6 +63,10 @@ struct GalleryView: View {
                         isImegaPickerPresented = false
                     }
                     .padding()
+                }
+                
+                if viewModel.processing {
+                    LoadingView()
                 }
             }
             .navigationTitle("Gallery")
@@ -89,13 +95,29 @@ struct GalleryView: View {
                 selection: $selectedItem,
                 matching: .images
             )
-            .onChange(of: selectedItem) { _, newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                        viewModel.userProfile.images.append(data)
+            .onChange(of: isPhotosPickerPresented) { _, isPresented in
+                if !isPresented, let selectedItem {
+                    Task {
+                        if let data = try? await selectedItem.loadTransferable(type: Data.self) {
+                            self.selectedItem = nil
+                            await viewModel.addImage(data: data)
+                        }
                     }
                 }
             }
+            .onAppear() {
+                Task {
+                    await viewModel.fetchUserProfile()
+                }
+            }
+            .alert(isPresented: $viewModel.isAllertPresented) {
+                Alert(
+                    title: Text("Error"),
+                    message: Text(viewModel.alertMessage),
+                    dismissButton: .default(Text("ОК"))
+                )
+            }
+            
         }
     }
 }
