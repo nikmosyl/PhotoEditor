@@ -28,19 +28,20 @@ struct GalleryView: View {
                 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        if let images = viewModel.userProfile.images {
-                            ForEach(images.indices, id: \.self) { index in
-                                if let uiImage = UIImage(data: images[index]) {
-                                    NavigationLink  {
-                                        ProfileView()
-                                    } label: {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 150, height: 150)
-                                            .clipped()
-                                            .cornerRadius(8)
-                                    }
+                        ForEach(Array(viewModel.imagesData.enumerated()), id: \.offset) { index, imageData in
+                            if let uiImage = UIImage(data: imageData) {
+                                NavigationLink {
+                                    ImageEditorView(imageData: Binding(
+                                        get: { viewModel.imagesData[index] },
+                                        set: { viewModel.imagesData[index] = $0 }
+                                    ))
+                                } label: {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 150, height: 150)
+                                        .clipped()
+                                        .cornerRadius(12)
                                 }
                             }
                         }
@@ -107,11 +108,6 @@ struct GalleryView: View {
                             await viewModel.addImage(data: data)
                         }
                     }
-                }
-            }
-            .onAppear() {
-                Task {
-                    await viewModel.fetchUserProfile()
                 }
             }
             .alert(isPresented: $viewModel.isAllertPresented) {

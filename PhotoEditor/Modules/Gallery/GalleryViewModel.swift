@@ -9,11 +9,18 @@ import Foundation
 
 final class GalleryViewModel: ObservableObject {
     @Published var userProfile: UserProfile = UserProfile(uid: "", nickname: "")
+    @Published var imagesData: [Data] = []
     
     @Published var processing: Bool = false
     
     @Published var isAllertPresented: Bool = false
     var alertMessage: String = ""
+    
+    init() {
+        Task {
+            await fetchUserProfile()
+        }
+    }
     
     @MainActor
     func fetchUserProfile() async {
@@ -24,18 +31,14 @@ final class GalleryViewModel: ObservableObject {
         }
         
         userProfile = currentUser
+        imagesData = userProfile.images ?? []
         
         processing = false
     }
     
     func addImage(data: Data) async {
-        await MainActor.run {
-            if userProfile.images == nil {
-                userProfile.images = [data]
-            } else {
-                userProfile.images?.append(data)
-            }
-        }
+        imagesData.append(data)
+        userProfile.images = imagesData
         
         do {
             try await AuthService.shared.saveUserProfile(user: userProfile)
