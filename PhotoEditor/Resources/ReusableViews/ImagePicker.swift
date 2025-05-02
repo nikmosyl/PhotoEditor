@@ -8,28 +8,28 @@
 import SwiftUI
 
 struct ImagePicker: View {
-        var pickFromGallery: () -> Void
-        var takePhoto: () -> Void
-        
-        var body: some View {
-            VStack {
-                ColoredButton(
-                    label: "PickFrom Gallery",
-                    type: .primary,
-                    icon: Image(systemName: "photo.badge.plus"),
-                    closure: pickFromGallery
-                )
-                
-                ColoredButton(
-                    label: "Take Photo",
-                    type: .primary,
-                    icon: Image(systemName: "person.crop.square.badge.camera"),
-                    closure: pickFromGallery
-                )
-            }
-            .tint(.buttonTitle)
-            .bordered()
+    var pickFromGallery: () -> Void
+    var takePhoto: () -> Void
+    
+    var body: some View {
+        VStack {
+            ColoredButton(
+                label: "PickFrom Gallery",
+                type: .primary,
+                icon: Image(systemName: "photo.badge.plus"),
+                closure: pickFromGallery
+            )
+            
+            ColoredButton(
+                label: "Take Photo",
+                type: .primary,
+                icon: Image(systemName: "person.crop.square.badge.camera"),
+                closure: takePhoto
+            )
         }
+        .tint(.buttonTitle)
+        .bordered()
+    }
 }
 
 #Preview {
@@ -38,5 +38,4 @@ struct ImagePicker: View {
     } takePhoto: {
         print("takePhoto")
     }
-
 }

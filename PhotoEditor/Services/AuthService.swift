@@ -37,7 +37,11 @@ final class AuthService {
         let userData = try JSONEncoder().encode(user)
         let userDataDictionary = try JSONSerialization.jsonObject(with: userData, options: []) as? [String: Any]
         
-        try await database.child(Storage.users.rawValue).child(user.uid).setValue(userDataDictionary)
+        do {
+            try await database.child(Storage.users.rawValue).child(user.uid).setValue(userDataDictionary)
+        } catch {
+            print("Ошибка при сохранении данных пользователя: \(error.localizedDescription)")
+        }
     }
     
     func fetchUserProfile(userId: String) async throws -> UserProfile {
@@ -87,8 +91,9 @@ final class AuthService {
     }
     
     func signOut() throws {
-        try auth.signOut()
         GIDSignIn.sharedInstance.signOut()
+        GIDSignIn.sharedInstance.disconnect()
+        try auth.signOut()
         forgetUser()
     }
     

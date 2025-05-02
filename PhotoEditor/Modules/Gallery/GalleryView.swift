@@ -74,6 +74,11 @@ struct GalleryView: View {
                     LoadingView()
                 }
             }
+            .onAppear() {
+                Task {
+                    await viewModel.saveGallery()
+                }
+            }
             .navigationTitle("Gallery")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -104,6 +109,7 @@ struct GalleryView: View {
                 if !isPresented, let selectedItem {
                     Task {
                         if let data = try? await selectedItem.loadTransferable(type: Data.self) {
+                            print("data найдена")
                             self.selectedItem = nil
                             await viewModel.addImage(data: data)
                         }

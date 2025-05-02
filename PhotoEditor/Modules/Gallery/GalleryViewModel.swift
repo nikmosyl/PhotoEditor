@@ -41,11 +41,22 @@ final class GalleryViewModel: ObservableObject {
         imagesData.append(data)
         userProfile.images = imagesData
         
+        await saveGallery()
+    }
+    
+    @MainActor
+    func saveGallery() async {
+        processing = true
+        
+        if userProfile.uid.isEmpty { return }
+        
         do {
             try await AuthService.shared.saveUserProfile(user: userProfile)
         } catch {
             alertMessage = "\(error.localizedDescription)"
             isAllertPresented = true
         }
+        
+        processing = false
     }
 }

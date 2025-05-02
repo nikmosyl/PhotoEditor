@@ -15,7 +15,7 @@ struct LoadingView: View {
             Color.background.opacity(0.01)
                 .ignoresSafeArea()
                 .background(
-                    Material.ultraThin // Полупрозрачный фон с матовым эффектом
+                    Material.ultraThin
                 )
             
             ForEach(0..<12) { i in

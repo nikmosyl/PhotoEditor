@@ -42,12 +42,15 @@ final class SignInViewModel: ObservableObject {
     
     @MainActor
     func loginWithGoogle() async -> Bool {
+        processing = true
         do {
             try await AuthService.shared.signInWithGoogle()
+            processing = false
             return true
         } catch {
             alertMessage = error.localizedDescription
             isAllertPresented = true
+            processing = false
             return false
         }
     }

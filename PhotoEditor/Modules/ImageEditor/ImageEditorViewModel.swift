@@ -54,6 +54,8 @@ final class ImageEditorViewModel: ObservableObject {
         return getImageData()
     }
     
+    
+    
     func getImageData() -> Data? {
         image.jpegData(compressionQuality: 1.0)
     }

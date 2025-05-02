@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ImageEditorView: View {
     @Environment(\.dismiss) var dismiss
+    @State var cropRect = CGRect(x: 0, y: 0, width: 200, height: 200)
     @Binding var imageData: Data
     
     @ObservedObject private var viewModel: ImageEditorViewModel
@@ -23,11 +24,17 @@ struct ImageEditorView: View {
             Color(.background)
                 .ignoresSafeArea()
             
-            Image(uiImage: UIImage(data: imageData) ?? UIImage())
-                .resizable()
-                .scaledToFit()
-            
             VStack {
+                Spacer()
+                
+                ZStack {
+                    Image(uiImage: UIImage(data: imageData) ?? UIImage())
+                        .resizable()
+                        .scaledToFit()
+                    
+                    CropRectangle()
+                }
+                
                 Spacer()
                 
                 toolsBar
@@ -40,7 +47,6 @@ struct ImageEditorView: View {
                         dismiss()
                     } label: {
                         Image(systemName: "chevron.backward")
-                        Text("SAVE")
                     }
                     .tint(.secondaryButtonTitle)
 
@@ -63,6 +69,8 @@ struct ImageEditorView: View {
                 Image(systemName: "rotate.right")
             }
             
+            
+            
             Spacer()
         }
         .tint(.secondaryButtonTitle)
@@ -71,9 +79,7 @@ struct ImageEditorView: View {
 
 
 #Preview {
-    if let image = UIImage(named: "photoExample") {
-        if let imageData = image.jpegData(compressionQuality: 1) {
-            ImageEditorView(imageData: .constant(imageData))
-        }
-    }
+    @Previewable @State var image = (UIImage(named: "photoExample") ?? UIImage()).jpegData(compressionQuality: 1) ?? Data()
+    
+    ImageEditorView(imageData: $image)
 }
