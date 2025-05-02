@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ImageEditorView: View {
     @Environment(\.dismiss) var dismiss
-    @State var cropRect = CGRect(x: 0, y: 0, width: 200, height: 200)
     @Binding var imageData: Data
     
     @ObservedObject private var viewModel: ImageEditorViewModel
@@ -32,7 +31,7 @@ struct ImageEditorView: View {
                         .resizable()
                         .scaledToFit()
                     
-                    CropRectangle()
+                    CropRectangleView()
                 }
                 
                 Spacer()
@@ -49,7 +48,6 @@ struct ImageEditorView: View {
                         Image(systemName: "chevron.backward")
                     }
                     .tint(.secondaryButtonTitle)
-
                 }
             }
         }

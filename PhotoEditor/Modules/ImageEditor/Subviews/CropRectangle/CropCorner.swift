@@ -1,5 +1,5 @@
 //
-//  CropRectangle.swift
+//  CropCorner.swift
 //  PhotoEditor
 //
 //  Created by nikita on 02.05.2025.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct CropRectangle: View {
-    @State var position = CGSize.zero
+struct CropCorner: View {
+    @State var position: CGSize
     @State var dragOffset = CGSize.zero
     
     var body: some View {
@@ -25,6 +25,7 @@ struct CropRectangle: View {
                     .onEnded { value in
                         position.width += value.translation.width
                         position.height += value.translation.height
+                        position = position
                         dragOffset = .zero
                     }
             )
@@ -32,10 +33,5 @@ struct CropRectangle: View {
 }
 
 #Preview {
-    @Previewable @State var cropRect: CGRect = CGRect(
-        origin: .zero,
-        size: CGSize(width: 100, height: 100)
-    )
-    
-    CropRectangle()
+    CropCorner(position: .zero)
 }
