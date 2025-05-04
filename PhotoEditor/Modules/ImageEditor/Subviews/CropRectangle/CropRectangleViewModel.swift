@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct CropRectangle {
-    var upperLeft = CGSize(width: -50, height: -50) {
+final class CropRectangleViewModel: ObservableObject {
+    @Published var upperLeft = CGSize(width: -50, height: -50) {
         willSet {
             print("upperLeft willSet")
             upperRight.height = newValue.height
@@ -16,7 +16,7 @@ struct CropRectangle {
         }
     }
     
-    var upperRight = CGSize(width: 50, height: -50)
+    @Published var upperRight = CGSize(width: 50, height: -50)
     {
         willSet {
             print("upperRight willSet")
@@ -25,7 +25,7 @@ struct CropRectangle {
         }
     }
     
-    var lowerLeft = CGSize(width: -50, height: 50)
+    @Published var lowerLeft = CGSize(width: -50, height: 50)
     {
         willSet {
             print("lowerLeft willSet")
@@ -34,7 +34,7 @@ struct CropRectangle {
         }
     }
     
-    var lowerRight = CGSize(width: 50, height: 50)
+    @Published var lowerRight = CGSize(width: 50, height: 50)
     {
         willSet {
             print("lowerRight willSet")
